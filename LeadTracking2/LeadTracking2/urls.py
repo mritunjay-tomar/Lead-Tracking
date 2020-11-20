@@ -21,5 +21,5 @@ urlpatterns = [
     path('', include('Recruiter.urls')),
 ]
 
-handler404 = 'Recruiter.views.handler404'
-handler400 = 'Recruiter.views.handler500'
+handler404 = 'Recruiter.Views.views.handler404'
+handler400 = 'Recruiter.Views.views.handler500'
