@@ -22,3 +22,4 @@ urlpatterns = [
 ]
 
 handler404 = 'Recruiter.views.handler404'
+handler400 = 'Recruiter.views.handler500'

@@ -1,0 +1,27 @@
+{% extends 'DefaultTemplates/base.html' %}
+
+{% block content %}
+<div class="card card-body bg-light" style="width:500px; height:300px; align:center;">
+    <form method="POST">
+        {% csrf_token %}
+            <h5 style="text-align: center">Log In</h5>
+            <br>
+            <div class="form-group">
+            <table style="margin-left: auto; margin-right: auto;" cellpadding="15" cellspacing="15">
+                {% for field in form %}
+                <tr>
+                    <div class="row-fluid">
+                        <td>{{ field.label_tag }}</td>
+                        <td>{{ field }}</td>
+                    </div>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <br>
+        <div style="text-align: center;">
+            <button style="position: absolute;" class="btn btn-primary" type="submit">Log-in</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

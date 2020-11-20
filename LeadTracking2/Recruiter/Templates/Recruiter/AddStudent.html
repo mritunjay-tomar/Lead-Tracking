@@ -1,0 +1,63 @@
+{% extends 'DefaultTemplates/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block LeftNavBar %}
+    <li class="nav-item"><a class="nav-link nav-link" href=" {% url 'Recruiter:home' %} ">Home</a></li>
+{% endblock %}
+
+{% block RightNavBar %}
+    <!-- Add welcome only if first name is passed in session -->
+    {% if request.session.fName %}
+        <li class="nav-item"><a class="nav-link nav-link"><label>Welcome, {{ request.session.fName }}</label></a></li>
+    {% endif %}
+    <li class="nav-item"><a class="nav-link nav-link" href="{% url 'Recruiter:logout'%}">Logout</a></li>
+{% endblock %}
+
+
+<!-- Add html body -->
+{% block content %}
+
+    <!--div class="col-md-8">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div-->
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="container" >
+            <h5 style="text-align: center">Add Student</h5>
+            <br>
+            
+            <table style="margin-right: auto;margin-left: auto; " class="" cellpadding="15" cellspacing="15">
+                <tr>
+                    <td><small><span style='color:red'>*</span> denotes mandatory field</small>
+                    </td>
+                </tr>
+                {% for field in form %}
+                    <tr>
+                        <div class="row-fluid">
+                            <td>{{ field.label_tag }}</td>
+                            <td>{{ field }}</td>
+                            {% if field.help_text %}
+                                <td>{{ field.help_text }}</td>
+                            {% endif %}
+                            {% if field.error %}
+                                <td>{{ field.error }}</td>
+                            {% endif %}
+                        </div>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <br>
+            <br>
+            <div id="button" class="container" style="text-align: center">
+                <button class="btn btn-outline-primary btn-primary" type="submit" method="POST">Save</button>
+                <button class="btn" type="button" onclick="RedirectToURL({% url 'Recruiter:home' %})">Back</a></button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
