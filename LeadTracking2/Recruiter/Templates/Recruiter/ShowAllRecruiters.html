@@ -1,0 +1,60 @@
+{% extends 'DefaultTemplates/base.html' %}
+{% load static %}
+
+<!-- Adding home button to regisrer left nav header -->
+{% block LeftNavBar %}
+    <li class="nav-item"><a class="nav-link nav-link" href=" {% url 'Recruiter:home' %} "><span class="fa fa-home"></span> Home</a></li>
+{% endblock %}
+
+{% block RightNavBar %}
+    <!-- Add welcome only if first name is passed in session -->
+    {% if request.session.fName %}
+        <li class="nav-item"><a class="nav-link nav-link">Welcome, {{ request.session.fName }}</a></li>
+    {% endif %}
+    <li class="nav-item"><a class="nav-link nav-link" href="{% url 'Recruiter:logout'%}"><span class="fa fa-sign-out"></span>Logout</a></li>
+{% endblock %}
+
+
+
+{% block content %}
+<div class="container-fluid">
+    {% if Recruiters %}
+    <h3 style="text-align:center;">Recruiters</h3>
+    <br><br>
+    <table class="table table-hover table-responsive" id="RecruiterTable">
+        <thead>
+            <tr id="TableHeader">
+                <th style="display:none;"></th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Date Joined</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for Recruiter in Recruiters %}
+
+            <tr id = "Recruiter{{Recruiter.ID}}">
+                <td style="display:none;">{{Recruiter.ID}}</td>
+                <td>{{Recruiter.FirstName}}</td>
+                <td>{{Recruiter.LastName}}</td>
+                <td>{{Recruiter.Email}}</td>
+                <td>{{Recruiter.DateJoined}}</td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <h3 style="text-align:center;">No Recruiters to display</h3>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block ScriptSection %}
+    {% if Recruiters %}
+        $(function () {
+            $('#RecruiterTable').DataTable();
+        });
+    {% endif %}
+{% endblock %}

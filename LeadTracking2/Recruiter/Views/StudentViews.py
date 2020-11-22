@@ -1,13 +1,10 @@
 from django.shortcuts import render, redirect
 
-from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
 
-from Recruiter.models import Student as StudentORM
-from Recruiter.forms import UserRegistrationForm, StudentForm
+from Recruiter.forms import StudentForm
 from Recruiter.LogicFiles import Student as StudentLogic
 from Recruiter.Views import RecruiterViews
 
@@ -64,4 +61,7 @@ def DeleteStudent(request):
 
 @login_required
 def ArchiveStudent(request):
+    studentIDs = request.GET.get('studentIDs')
+    StudentLogic.StudentArchive(1)
+    messages.success(request, "Student's archived successfully")
     return RecruiterViews.RecuriterHome(request)

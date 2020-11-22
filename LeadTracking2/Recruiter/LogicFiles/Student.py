@@ -1,11 +1,11 @@
-from Recruiter.models import Student
+from Recruiter.models import Student, StudentArchives
 
 
 def GetStudentSQL():
     query = """
         SELECT 
             student.ID, 
-            student.FirstName || ' ' || student.LastName Name, 
+            student.FirstName || ' ' || student.MiddleName || '' ||student.LastName Name, 
             student.Email, 
             student.PhoneNumber, 
             CASE student.Status 
@@ -18,6 +18,28 @@ def GetStudentSQL():
             0 Button
         FROM 
             Recruiter_student student;
+    """
+
+    return query
+
+
+def GetArchiveStudentSQL():
+    query = """
+        SELECT 
+            student.ID, 
+            student.FirstName || ' ' || student.MiddleName || '' ||student.LastName Name, 
+            student.Email, 
+            student.PhoneNumber, 
+            CASE student.Status 
+                WHEN 1 THEN 'INITIAL' 
+                WHEN 2 THEN 'CONVERTED' 
+                ELSE 'BLANK' 
+            END Status,
+            student.statusChangedBy StatusChangedBy,
+            student.country Country,
+            0 Button
+        FROM 
+            Recruiter_studentarchives student;
     """
 
     return query
@@ -47,4 +69,19 @@ def ReInitializeStudent(studentID):
 
 def DeleteStudent(studentID):
     student = Student.objects.filter(ID=studentID).first()
+    student.delete()
+
+
+def StudentArchive(StudentID):
+    student = Student.objects.filter(ID=StudentID).first()
+    archive = StudentArchives()
+    archive.FirstName = student.FirstName
+    archive.MiddleName = student.MiddleName
+    archive.LastName = student.LastName
+    archive.Email = student.Email
+    archive.PhoneNumber = student.PhoneNumber
+    archive.UserSavedBy = student.UserSavedBy
+    archive.country = student.country
+    archive.StatusChangedBy = student.StatusChangedBy
+    archive.save()
     student.delete()

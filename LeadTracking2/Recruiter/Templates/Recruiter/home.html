@@ -1,10 +1,32 @@
 {% extends 'DefaultTemplates/base.html' %}
+{% load static %}
 
 <!-- Block to add references in navigation bar -->
+{% block HeadSection %}
+
+{% endblock %}
+
 {% block LeftNavBar %}
-    {% if request.user.is_superuser %}
-        <li class="nav-item"><a class="nav-link" href="{% url 'Recruiter:register-recruiter' %}">Add Recruiter</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'Recruiter:new-student' %}">Add Student</a></li>
+    {% if ShowArchiveStudents %}
+        <li class="nav-item"><a class="nav-link nav-link" href=" {% url 'Recruiter:home' %} "><span class="fa fa-home"></span> Home</a></li>
+    {% else %}
+        {% if request.user.is_superuser %}
+                <li class="dropdown">
+                    <a id="RecruiterDropdown" class="dropdown-toggle nav-link" role="button" data-toggle="dropdown" href="#">Recruiter</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'Recruiter:show-recruiters' %}">Show Recruiters</a>
+                        <a class="dropdown-item" href="{% url 'Recruiter:register-recruiter' %}">Add Recruiter</a>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a id="StudentNavBarDropDown" class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" href="#">Student<span class="caret"></span></a>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item" href="{% url 'Recruiter:new-student' %}">Add Student</a>
+                      <a class="dropdown-item" href="{% url 'Recruiter:archive-student' %}">Archived Student</a>
+                    </div>
+                </li>
+        {% endif %}
     {% endif %}
 {% endblock %}
 
@@ -12,9 +34,9 @@
 {% block RightNavBar %}
     <!-- Add welcome only if first name is passed in session -->
     {% if request.session.fName %}
-        <li class="nav-item"><a class="nav-link nav-link"><label>Welcome, {{ request.session.fName }}</label></a></li>
+        <li class="nav-item"><a class="nav-link nav-link">Welcome, {{ request.session.fName }}</a></li>
     {% endif %}
-    <li class="nav-item"><a class="nav-link nav-link" href="{% url 'Recruiter:logout'%}">Logout</a></li>
+    <li class="nav-item"><a class="nav-link nav-link" href="{% url 'Recruiter:logout'%}"><span class="fa fa-sign-out"></span>Logout</a></li>
 {% endblock %}
 
 
@@ -22,11 +44,19 @@
 {% block content %}
 <div>
     {% if Student %}
-    <h5 class="" style="text-align:center">Student</h5>
-    <br>
-    <div class="container pull-left">
-        <button type="button" id="ArchiveButton" class="btn" onclick="MarkArchive()">Archive</button>
+    {% if ShowArchiveStudents %}
+        <h5 class="" style="text-align:center">Archive Student</h5>
+    {% else %}
+        <h5 class="" style="text-align:center">Student</h5>
+    {% endif %}
+    <div class="container-fluid pull-left">
+        {% if ShowArchiveStudents %}
+            <button type="button" id="removeArchiveButton" class="btn" onclick="javascript:MarkArchive();">Remove Archive</button>
+        {% else %}
+            <button type="button" id="ArchiveButton" class="btn" onclick="javascript:MarkArchive();">Archive</button>
+        {% endif %}
     </div>
+    <br>
     <br>
     <table class="table table-hover table-responsive" id="HomeStudentTable">
     <thead>
@@ -34,7 +64,7 @@
         <th style="display:none;">ID</th>
         <th>Archive</th>
         {% if request.user.is_superuser %}
-            <th>Delete Student</th>
+            <th style="width:75px">Delete Student</th>
         {% endif %}
         <th style="width:200px">Student Name</th>
         <th>Phone Number</th>
@@ -43,7 +73,7 @@
         {% if request.user.is_superuser %}
             <th>Converted By</th>
         {% endif %}
-        <th>Preferred Country</th>
+        <th style="width:75px">Preferred Country</th>
         <th style="text-align:center">Action</th>
     </tr>
     </thead>
@@ -52,15 +82,8 @@
         <tr id = {{ student.ID }} class="studentID" >
             <td style="display:none;">{{ student.ID }}</td>
             <td id="archiveChkBox"><input type="checkbox"></td>
-            {%  if request.user.is_superuser %}    
-                <td>
-                    <button type="button" class="btn btn-danger" onclick="RedirectToURL('{%url 'Recruiter:delete-student' %}?studentId={{ student.ID }}')" style="color:white">
-                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
-                        </svg>
-                    </a>
-                    </button>
-                </td>
+            {%  if request.user.is_superuser %}
+                <td><button type="button" class="btn btn-danger" onclick="RedirectToURL('{%url 'Recruiter:delete-student' %}?studentId={{ student.ID }}')"><span class="fa fa-trash"></span></button></td>
             {% endif %}
             <td>{{ student.Name }}</td>
             <td>{{ student.PhoneNumber }}</td>

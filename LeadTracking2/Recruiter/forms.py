@@ -1,16 +1,13 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
 
 from django.utils.safestring import mark_safe
 
 from Recruiter.models import Student as StudentModel
-from Recruiter.FormUtils import utility
+from Recruiter.Utility import utility
 from Recruiter.LogicFiles import Student as StudentLogic
 
 from django_countries.fields import CountryField
-from django_countries.data import COUNTRIES
-from django_countries.widgets import CountrySelectWidget
 
 
 class UserRegistrationForm(forms.Form):
@@ -101,7 +98,6 @@ class StudentForm(forms.Form):
         required=False
     )
     Country = CountryField(blank=True, multiple=True).formfield()
-   # Country = forms.ChoiceField(choices=sorted(COUNTRIES.items()))
 
     class Meta:
         model = StudentModel

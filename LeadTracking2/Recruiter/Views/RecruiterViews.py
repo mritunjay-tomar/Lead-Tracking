@@ -1,19 +1,18 @@
 from django.shortcuts import render, redirect
 
-from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.models import User
 from django.contrib import messages
 
 from Recruiter.models import Student as StudentORM
-from Recruiter.forms import UserRegistrationForm, StudentForm
+from Recruiter.forms import UserRegistrationForm
 from Recruiter.LogicFiles import Student as StudentLogic
-from Recruiter.Views import views
+from Recruiter.LogicFiles import Recruiter as RecruiterLogic
 
 
-@user_passes_test(lambda u: u.is_superuser)
 @login_required
+@user_passes_test(lambda u: u.is_superuser)
 def RegisterRecruiter(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
@@ -38,3 +37,21 @@ def RecuriterHome(request):
     }
     return render(request, 'Recruiter/home.html', context)
 
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def ShowArchiveStudents(request):
+    context = {
+        "ShowArchiveStudents": True,
+        "Student": StudentORM.objects.raw(StudentLogic.GetArchiveStudentSQL())
+    }
+    return render(request, 'Recruiter/home.html', context)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def ShowAllRecruiters(request):
+    context = {
+        "Recruiters": User.objects.raw(RecruiterLogic.GetRecruiterList())
+    }
+    return render(request, 'Recruiter/ShowAllRecruiters.html', context)
