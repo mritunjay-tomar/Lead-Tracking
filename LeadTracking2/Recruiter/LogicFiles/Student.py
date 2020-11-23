@@ -85,3 +85,18 @@ def StudentArchive(StudentID):
     archive.StatusChangedBy = student.StatusChangedBy
     archive.save()
     student.delete()
+
+
+def RemoveStudentFromArchive(StudentID):
+    archive = StudentArchives.objects.filter(ID=StudentID).first()
+    student = Student()
+    student.FirstName = archive.FirstName
+    student.MiddleName = archive.MiddleName
+    student.LastName = archive.LastName
+    student.Email = archive.Email
+    student.PhoneNumber = archive.PhoneNumber
+    student.UserSavedBy = archive.UserSavedBy
+    student.country = archive.country
+    student.StatusChangedBy = archive.StatusChangedBy
+    student.save()
+    archive.delete()

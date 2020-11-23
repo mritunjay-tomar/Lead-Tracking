@@ -71,3 +71,17 @@ def ArchiveStudent(request):
         messages.error(request, "There occurred an exception in archiving students")
 
     return RecruiterViews.RecuriterHome(request)
+
+
+@login_required
+def RemoveStudentFromArchive(request):
+    studentIDs = str(request.GET.get('studentIDs'))
+    IDs = studentIDs.split("&")
+    try:
+        for ID in IDs:
+            StudentLogic.RemoveStudentFromArchive(int(ID))
+        messages.success(request, "Student's archived successfully")
+    except:
+        messages.error(request, "There occurred an exception in archiving students")
+
+    return RecruiterViews.RecuriterHome(request)

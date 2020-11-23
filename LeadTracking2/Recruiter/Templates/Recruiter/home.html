@@ -3,7 +3,7 @@
 
 <!-- Block to add references in navigation bar -->
 {% block HeadSection %}
-
+<script src="{% static 'JS/Recruiter.js' %}"></script>
 {% endblock %}
 
 {% block LeftNavBar %}
@@ -44,17 +44,18 @@
 {% block content %}
 <!-- This URL will be used in Recruiters.js -->
 <input type="hidden" id="ArchiveURL" data-url="{% url 'Recruiter:mark-student-archive' %}"/>
+<input type="hidden" id="RemoveArchiveURL" data-url="{% url 'Recruiter:remove-student-archive' %}"/>
 
 <div>
     {% if Student %}
     {% if ShowArchiveStudents %}
-        <h5 class="" style="text-align:center">Archive Student</h5>
+        <h3 class="" style="text-align:center">Archive Student</h3>
     {% else %}
-        <h5 class="" style="text-align:center">Student</h5>
+        <h3 class="" style="text-align:center">Student</h3>
     {% endif %}
     <div class="container-fluid pull-left">
         {% if ShowArchiveStudents %}
-            <button type="button" id="removeArchiveButton" class="btn" onclick="javascript:MarkArchive();">Remove Archive</button>
+            <button type="button" id="removeArchiveButton" class="btn" onclick="javascript:RemoveStudentFromArchive();">Remove Archive</button>
         {% else %}
             <button type="button" id="ArchiveButton" class="btn" onclick="javascript:MarkArchive();">Archive</button>
         {% endif %}
@@ -77,7 +78,9 @@
                 <th>Converted By</th>
             {% endif %}
             <th style="width:75px">Preferred Country</th>
-            <th style="text-align:center">Action</th>
+            {% if ShowArchiveStudents == false %}
+                <th style="text-align:center">Action</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -86,7 +89,7 @@
             <td style="display:none;">{{ student.ID }}</td>
             <td id="archiveChkBox"><input type="checkbox"></td>
             {%  if request.user.is_superuser %}
-                <td><button type="button" class="btn btn-danger" onclick="RedirectToURL('{%url 'Recruiter:delete-student' %}?studentId={{ student.ID }}')"><span class="fa fa-trash"></span></button></td>
+                <td><button type="button" class="btn btn-danger" onclick="confirmBeforeDelete('{%url 'Recruiter:delete-student' %}?studentId={{ student.ID }}')"><span class="fa fa-trash"></span></button></td>
             {% endif %}
             <td>{{ student.Name }}</td>
             <td>{{ student.PhoneNumber }}</td>
@@ -96,14 +99,16 @@
                 <td>{{ student.StatusChangedBy }}</td>
             {% endif %}
             <td>{{ student.Country }}</td>
-            {%  if student.Status == 'INITIAL' %}
-                <td> <button class="btn btn-primary" onclick=" RedirectToURL('{% url 'Recruiter:convert-student' %}?studentId={{ student.ID }}&user_first_name={{ request.session.fName }}&user_last_name={{ request.session.lName }}')" style="color:white">Convert Student</button></td>
-            {% else %}
-                {% if not request.user.is_superuser %}
-                    <td> <button class="btn btn-success" disabled>Converted</button></td>
+            {% if ShowArchiveStudents == false %}
+                {%  if student.Status == 'INITIAL' %}
+                    <td> <button class="btn btn-primary" onclick=" RedirectToURL('{% url 'Recruiter:convert-student' %}?studentId={{ student.ID }}&user_first_name={{ request.session.fName }}&user_last_name={{ request.session.lName }}')" style="color:white">Convert Student</button></td>
                 {% else %}
-                    {% if student.Status == 'CONVERTED' %}
-                        <td><button class="btn btn-warning" onclick="RedirectToURL('{% url 'Recruiter:reinitial' %}?studentId={{ student.ID }}')" style="color:black">Re-Initialize</button></td>
+                    {% if not request.user.is_superuser %}
+                        <td> <button class="btn btn-success" disabled>Converted</button></td>
+                    {% else %}
+                        {% if student.Status == 'CONVERTED' %}
+                            <td><button class="btn btn-warning" onclick="RedirectToURL('{% url 'Recruiter:reinitial' %}?studentId={{ student.ID }}')" style="color:black">Re-Initialize</button></td>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             {% endif %}

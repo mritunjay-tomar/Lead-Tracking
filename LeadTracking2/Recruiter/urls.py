@@ -12,6 +12,7 @@ urlpatterns = [
     path('convert/', StudentViews.ConvertStudent, name='convert-student'),
     path('delete/', StudentViews.DeleteStudent, name='delete-student'),
     path('archive/', StudentViews.ArchiveStudent, name='mark-student-archive'),
+    path('removearchive/', StudentViews.ArchiveStudent, name='remove-student-archive'),
     path('archivestudent/', RecruiterViews.ShowArchiveStudents, name='archive-student'),
     path('showrecruiters/', RecruiterViews.ShowAllRecruiters, name='show-recruiters'),
     path('reinitial/', StudentViews.ReInitialStudent, name='reinitial'),
