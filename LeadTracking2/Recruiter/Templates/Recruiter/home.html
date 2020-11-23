@@ -42,6 +42,9 @@
 
 <!-- Block to add body -->
 {% block content %}
+<!-- This URL will be used in Recruiters.js -->
+<input type="hidden" id="ArchiveURL" data-url="{% url 'Recruiter:mark-student-archive' %}"/>
+
 <div>
     {% if Student %}
     {% if ShowArchiveStudents %}
@@ -60,22 +63,22 @@
     <br>
     <table class="table table-hover table-responsive" id="HomeStudentTable">
     <thead>
-    <tr>
-        <th style="display:none;">ID</th>
-        <th>Archive</th>
-        {% if request.user.is_superuser %}
-            <th style="width:75px">Delete Student</th>
-        {% endif %}
-        <th style="width:200px">Student Name</th>
-        <th>Phone Number</th>
-        <th>E-mail</th>
-        <th>Status</th>
-        {% if request.user.is_superuser %}
-            <th>Converted By</th>
-        {% endif %}
-        <th style="width:75px">Preferred Country</th>
-        <th style="text-align:center">Action</th>
-    </tr>
+        <tr>
+            <th style="display:none;">ID</th>
+            <th>Archive</th>
+            {% if request.user.is_superuser %}
+                <th style="width:75px">Delete Student</th>
+            {% endif %}
+            <th style="width:200px">Student Name</th>
+            <th>Phone Number</th>
+            <th>E-mail</th>
+            <th>Status</th>
+            {% if request.user.is_superuser %}
+                <th>Converted By</th>
+            {% endif %}
+            <th style="width:75px">Preferred Country</th>
+            <th style="text-align:center">Action</th>
+        </tr>
     </thead>
     <tbody>
     {% for student in Student %}

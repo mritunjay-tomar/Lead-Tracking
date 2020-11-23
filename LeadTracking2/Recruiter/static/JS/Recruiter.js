@@ -1,5 +1,3 @@
-{% load static %}
-
 function RedirectToURL(url) {
     window.location = url
 }
@@ -11,14 +9,16 @@ function MarkArchive() {
         message.push(row.cells[0].innerHTML);
     });
     if (message.length > 0) {
-        var URL = "";
+        var URL = $("#ArchiveURL").attr("data-url");
+        URL = URL.concat("?studentIDs=");
         for (var i=0;i<message.length;i++) {
             if (i == 0) {
-                URL.concat(message[i]);
+                URL = URL.concat(message[i])
             }
-            URL.concat("&".concat(message[i]));
+            URL = URL.concat("&".concat(message[i]));
         }
-        RedirectToURL("{% url 'Recruiter:mark-student-archive' %}?studentIDs=".concat(URL));
+        console.log(URL);
+        RedirectToURL(URL);
     }
     else {
         alert("Please select student's to mark archive");

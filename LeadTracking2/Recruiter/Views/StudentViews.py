@@ -61,7 +61,13 @@ def DeleteStudent(request):
 
 @login_required
 def ArchiveStudent(request):
-    studentIDs = request.GET.get('studentIDs')
-    StudentLogic.StudentArchive(1)
-    messages.success(request, "Student's archived successfully")
+    studentIDs = str(request.GET.get('studentIDs'))
+    IDs = studentIDs.split("&")
+    try:
+        for ID in IDs:
+            StudentLogic.StudentArchive(int(ID))
+        messages.success(request, "Student's archived successfully")
+    except:
+        messages.error(request, "There occurred an exception in archiving students")
+
     return RecruiterViews.RecuriterHome(request)
